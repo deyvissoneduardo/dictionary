@@ -8,13 +8,15 @@ import '../../models/words_model.dart';
 import 'load_words_repository.dart';
 
 class LoadWordsRepositoryImpl implements LoadWordsRepository {
-  LoadWordsRepositoryImpl();
+  final AssetBundle assetBundle;
+
+  LoadWordsRepositoryImpl({required this.assetBundle});
 
   @override
   Future<Either<RepositoryException, WordsModel>> loadWords() async {
     try {
       final String words =
-          await rootBundle.loadString('assets/words_dictionary.json');
+          await assetBundle.loadString('assets/words_dictionary.json');
 
       final Map<String, dynamic> jsonMap = jsonDecode(words);
       final WordsModel content = WordsModel.fromJson(jsonMap);
