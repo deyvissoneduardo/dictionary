@@ -18,7 +18,7 @@ void main() {
     mockAssetBundle = MockAssetBundle();
     repository = LoadWordsRepositoryImpl(assetBundle: mockAssetBundle);
   });
-  group('LoadWordsRepositoryImpl', () {
+  group('Group test LoadWordsRepositoryImpl', () {
     test('Load JSON Dictionary', () async {
       const String testFilePath = 'assets/words_dictionary.json';
 
