@@ -18,4 +18,7 @@ class WordsModel {
 
   @override
   int get hashCode => words.hashCode;
+
+  @override
+  String toString() => 'WordsModel(words: $words)';
 }

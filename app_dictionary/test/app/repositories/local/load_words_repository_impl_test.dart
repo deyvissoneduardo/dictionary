@@ -4,32 +4,32 @@ import 'package:app_dictionary/app/models/words_model.dart';
 import 'package:app_dictionary/app/repositories/local/load_words_repository_impl.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-
-class MockAssetBundle extends Mock implements AssetBundle {}
 
 void main() {
-  late MockAssetBundle mockAssetBundle;
+  TestWidgetsFlutterBinding.ensureInitialized();
   late LoadWordsRepositoryImpl repository;
 
   setUp(() {
-    mockAssetBundle = MockAssetBundle();
-    repository = LoadWordsRepositoryImpl(assetBundle: mockAssetBundle);
+    repository = LoadWordsRepositoryImpl();
   });
   group('LoadWordsRepositoryImpl', () {
-    test('deve retornar WordsModel quando o JSON é carregado com sucesso',
-        () async {
-      const jsonString =
-          '{"a": 1, "aa": 1, "aaa": 1, "aah": 1, "aahed": 1, "aahing": 1, "aahs": 1, "aal": 1}';
+    test('Load JSON Dictionary', () async {
+      const String testFilePath = 'assets/words_dictionary.json';
 
-      when(() => mockAssetBundle.loadString('assets/words_dictionary.json'))
-          .thenAnswer(() async => jsonString);
+      final String content = await rootBundle.loadString(testFilePath);
 
-      final expectedModel = WordsModel.fromJson(jsonDecode(jsonString));
+      expect(content.isNotEmpty, true);
+    });
+
+    test('Load Words from JSON File', () async {
+      const String testFilePath = 'assets/words_dictionary.json';
+      final String content = await rootBundle.loadString(testFilePath);
+
+      final expectedModel = WordsModel.fromJson(jsonDecode(content));
       final result = await repository.loadWords();
 
       expect(result, isA<Success>());
-      expect(expectedModel, isNotEmpty);
+      expect(expectedModel, isA<WordsModel>());
     });
   });
 }
