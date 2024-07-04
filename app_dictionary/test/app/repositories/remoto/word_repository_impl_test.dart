@@ -12,13 +12,19 @@ class MockRestClient extends Mock implements RestClient {}
 void main() {
   late WordRepositoryImpl repository;
   late MockRestClient mockRestClient;
+
   setUp(() {
     mockRestClient = MockRestClient();
     repository = WordRepositoryImpl(restClient: mockRestClient);
   });
 
+  setUpAll(() {
+    registerFallbackValue(Uri());
+  });
+
   group('findByWord', () {
     const word = 'hello';
+    const baseUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
     final responseJson = [
       {
         'word': 'hello',
@@ -96,7 +102,7 @@ void main() {
               },
               {
                 'definition':
-                    'Used sarcastically to imply that the person addressed or referred to has done something the speaker or writer considers to be foolish.',
+                    'Used sarcastically to imply that the person addressed or referred to has done something the speaker ou writer considers to be foolish.',
                 'synonyms': [],
                 'antonyms': [],
                 'example':
@@ -131,17 +137,22 @@ void main() {
       expect(result, isA<Success<RepositoryException, WordModel>>());
       final success = result as Success<RepositoryException, WordModel>;
       expect(success.value.word, word);
+
+      verify(() => mockRestClient.get('$baseUrl$word')).called(1);
     });
 
     test('returns Failure if the http call returns empty data', () async {
       when(() => mockRestClient.get(any())).thenAnswer(
         (_) async => RestClientResponse(data: []),
       );
+
       final result = await repository.findByWord(word: word);
 
       expect(result, isA<Failure<RepositoryException, WordModel>>());
       final failure = result as Failure<RepositoryException, WordModel>;
       expect(failure.exception.message, 'No data found');
+
+      verify(() => mockRestClient.get('$baseUrl$word')).called(1);
     });
 
     test('returns Failure if an exception occurs', () async {
@@ -153,6 +164,8 @@ void main() {
       expect(result, isA<Failure<RepositoryException, WordModel>>());
       final failure = result as Failure<RepositoryException, WordModel>;
       expect(failure.exception.message, contains('Failed to fetch data'));
+
+      verify(() => mockRestClient.get('$baseUrl$word')).called(1);
     });
   });
 }
