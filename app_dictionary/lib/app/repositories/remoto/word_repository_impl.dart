@@ -15,13 +15,20 @@ class WordRepositoryImpl implements WordRepository {
     required String word,
   }) async {
     try {
-      final response = await _restClient.get<WordModel?>(
-        'https://api.dictionaryapi.dev/api/v2/entries/en/hello',
+      final response = await _restClient.get(
+        'https://api.dictionaryapi.dev/api/v2/entries/en/$word',
       );
 
-      return Success(response.data!);
+      if (response.data is List && response.data.isNotEmpty) {
+        final wordModel = WordModel.fromMap(response.data[0]);
+        return Success(wordModel);
+      } else {
+        return Failure(RepositoryException(message: 'No data found'));
+      }
     } on RepositoryException catch (e) {
-      throw Failure(RepositoryException(message: e.message, code: e.code));
+      return Failure(RepositoryException(message: e.message, code: e.code));
+    } catch (e) {
+      return Failure(RepositoryException(message: e.toString()));
     }
   }
 }
