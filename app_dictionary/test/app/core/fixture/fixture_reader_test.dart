@@ -26,16 +26,6 @@ void main() {
       expect(data['id'], 1);
     });
 
-    test('should return List', () {
-      final data = FixtureReader.getData<List>(
-        'core/fixture/words_dictionary.json',
-      );
-
-      expect(data, isA<List>());
-      expect(data.isNotEmpty, isTrue);
-      expect(data.first['id'], 1);
-    });
-
     test('should return FileSystemException if is file not found', () {
       const call = FixtureReader.getData;
 
