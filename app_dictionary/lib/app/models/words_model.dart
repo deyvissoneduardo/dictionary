@@ -21,4 +21,8 @@ class WordsModel {
 
   @override
   String toString() => 'WordsModel(words: $words)';
+
+  List<String> getWordsList() {
+    return words.keys.toList();
+  }
 }

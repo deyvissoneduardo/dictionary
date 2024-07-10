@@ -1,28 +1,44 @@
-import 'dart:developer';
-
 import 'package:get/get.dart';
 
 import '../../core/fp/either.dart';
-import '../../repositories/remoto/word_repository_impl.dart';
+import '../../services/local/load_words_service.dart';
 
 class HomeController extends GetxController {
-  final WordRepositoryImpl repositoryImpl;
+  final LoadWordsService _loadWordsService;
+  late RxList<String> wordsModel = <String>[].obs;
+  late RxList<String> wordsFavorite = <String>[].obs;
+  RxString erroMessage = ''.obs;
+  RxBool isLoading = false.obs;
 
-  HomeController({required this.repositoryImpl});
+  HomeController({
+    required LoadWordsService loadWordsService,
+  }) : _loadWordsService = loadWordsService;
 
   @override
   void onInit() {
-    loadWord('hello');
+    _loadWordsLocal();
     super.onInit();
   }
 
-  void loadWord(String word) async {
-    final result = await repositoryImpl.findByWord(word: word);
+  void _loadWordsLocal() async {
+    isLoading.value = true;
+    final result = await _loadWordsService.loadWords();
+    await Future.delayed(const Duration(seconds: 3));
     switch (result) {
-      case Success(value: final word):
-        log(word.toJson());
+      case Success(value: final words):
+        isLoading.value = false;
+        wordsModel.addAll(words);
       case Failure(exception: final err):
-        log('$err');
+        erroMessage.value = err.message;
+        isLoading.value = false;
     }
+  }
+
+  void favoriteWord(int index) {
+    if (!wordsFavorite.contains(wordsModel[index])) {
+      wordsFavorite.add(wordsModel[index]);
+      return;
+    }
+    wordsFavorite.remove(wordsModel[index]);
   }
 }

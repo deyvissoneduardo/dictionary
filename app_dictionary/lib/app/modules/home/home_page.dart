@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import '../../core/ui/widgets/loading_widget.dart';
 import './home_controller.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -11,14 +12,46 @@ class HomePage extends GetView<HomeController> {
       appBar: AppBar(
         title: const Text('HomePage'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () => controller.loadWord('black'),
-          child: const Icon(
-            Icons.check,
-            size: 50,
-          ),
-        ),
+      body: Obx(
+        () => controller.isLoading.isTrue
+            ? const LoadingWidget()
+            : Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: GridView.builder(
+                  itemCount: controller.wordsModel.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                  ),
+                  itemBuilder: (context, index) {
+                    return Stack(
+                      children: [
+                        Card(
+                          child: Center(
+                            child: Text(
+                              controller.wordsModel[index],
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Obx(() {
+                            return IconButton(
+                              onPressed: () => controller.favoriteWord(index),
+                              icon: Icon(
+                                Icons.favorite_border,
+                                color: controller.wordsFavorite
+                                        .contains(controller.wordsModel[index])
+                                    ? Colors.redAccent
+                                    : Colors.grey,
+                              ),
+                            );
+                          }),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
       ),
     );
   }
