@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 sealed class ThemeDefault {
   static final _defualtInputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(10),
-    borderSide: const BorderSide(color: Colors.blueAccent),
+    borderSide: const BorderSide(color: Colors.purple, strokeAlign: 2.0),
   );
 
   static final themeDefualt = ThemeData(
@@ -12,8 +12,8 @@ sealed class ThemeDefault {
     cardTheme: const CardTheme(
       elevation: 5,
     ),
-    appBarTheme: AppBarTheme(
-      backgroundColor: Colors.grey[500],
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.blue,
       centerTitle: true,
     ),
     inputDecorationTheme: InputDecorationTheme(
