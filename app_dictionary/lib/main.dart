@@ -14,7 +14,7 @@ void main() {
       enableLog: true,
       themeMode: ThemeMode.system,
       theme: ThemeDefault.themeDefualt,
-      initialRoute: AppRouters.HOMEPAGE,
+      initialRoute: AppRouters.BOTTOMBAR,
       getPages: AppRouters.pages,
       initialBinding: CoreBindings(),
     ),
