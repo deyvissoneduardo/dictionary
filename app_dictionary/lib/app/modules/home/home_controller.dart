@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/fp/either.dart';
+import '../../core/ui/helpers/constants.dart';
 import '../../services/local/load_words_service.dart';
 
 class HomeController extends GetxController
@@ -25,6 +29,7 @@ class HomeController extends GetxController
   @override
   void onInit() {
     _loadWordsLocal();
+    _loadWordsFavorites();
     controller = AnimationController(
       duration: const Duration(seconds: 3),
       vsync: this,
@@ -64,11 +69,21 @@ class HomeController extends GetxController
     }
   }
 
-  void favoriteWord(int index) {
+  void _loadWordsFavorites() async {
+    final sp = await SharedPreferences.getInstance();
+    final words = sp.getStringList(Constants.WORDSFAVORITES);
+    wordsFavorite.addAll(words!);
+  }
+
+  void favoriteWord(int index) async {
+    final sp = await SharedPreferences.getInstance();
     if (!wordsFavorite.contains(wordsModel[index])) {
       wordsFavorite.add(wordsModel[index]);
+      sp.setStringList(Constants.WORDSFAVORITES, wordsFavorite);
       return;
     }
+    log('3');
     wordsFavorite.remove(wordsModel[index]);
+    sp.setStringList(Constants.WORDSFAVORITES, wordsFavorite);
   }
 }
