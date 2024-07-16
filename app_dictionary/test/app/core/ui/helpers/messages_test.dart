@@ -1,4 +1,4 @@
-import 'package:app_dictionary/app/core/ui/helpers/messages.dart';
+import 'package:app_dictionary/app/core/helpers/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

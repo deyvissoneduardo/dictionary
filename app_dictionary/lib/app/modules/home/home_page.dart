@@ -1,10 +1,19 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import '../../core/extensions/platform_extensions.dart';
 import '../../core/ui/widgets/loading_widget.dart';
 import './home_controller.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
+
+  int _sizeLayout(BuildContext context) {
+    return !context.mobile()
+        ? 3
+        : !context.tablet()
+            ? 6
+            : 10;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +63,8 @@ class HomePage extends GetView<HomeController> {
                     Expanded(
                       child: GridView.builder(
                         itemCount: controller.wordsModel.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: _sizeLayout(context),
                         ),
                         itemBuilder: (context, index) {
                           return Stack(

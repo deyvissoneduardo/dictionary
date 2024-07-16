@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/fp/either.dart';
-import '../../core/ui/helpers/constants.dart';
+import '../../core/helpers/constants.dart';
 import '../../services/local/load_words_service.dart';
 
 class HomeController extends GetxController
