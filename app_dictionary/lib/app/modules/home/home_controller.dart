@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,9 +25,9 @@ class HomeController extends GetxController
   }) : _loadWordsService = loadWordsService;
 
   @override
-  void onInit() {
-    _loadWordsLocal();
-    _loadWordsFavorites();
+  void onInit() async {
+    await loadWordsLocal();
+    await loadWordsFavorites();
     controller = AnimationController(
       duration: const Duration(seconds: 3),
       vsync: this,
@@ -55,34 +53,36 @@ class HomeController extends GetxController
     super.onClose();
   }
 
-  void _loadWordsLocal() async {
+  Future<void> loadWordsLocal() async {
     isLoading.value = true;
-    final result = await _loadWordsService.loadWords();
-    await Future.delayed(const Duration(seconds: 3));
-    switch (result) {
-      case Success(value: final words):
-        isLoading.value = false;
-        wordsModel.addAll(words);
-      case Failure(exception: final err):
-        erroMessage.value = err.message;
-        isLoading.value = false;
+    try {
+      final result = await _loadWordsService.loadWords();
+      switch (result) {
+        case Success(value: final words):
+          wordsModel.addAll(words);
+          break;
+        case Failure(exception: final err):
+          erroMessage.value = err.message;
+          break;
+      }
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  void _loadWordsFavorites() async {
+  Future<void> loadWordsFavorites() async {
     final sp = await SharedPreferences.getInstance();
     final words = sp.getStringList(Constants.WORDSFAVORITES);
     wordsFavorite.addAll(words!);
   }
 
-  void favoriteWord(int index) async {
+  Future<void> favoriteWord(int index) async {
     final sp = await SharedPreferences.getInstance();
     if (!wordsFavorite.contains(wordsModel[index])) {
       wordsFavorite.add(wordsModel[index]);
       sp.setStringList(Constants.WORDSFAVORITES, wordsFavorite);
       return;
     }
-    log('3');
     wordsFavorite.remove(wordsModel[index]);
     sp.setStringList(Constants.WORDSFAVORITES, wordsFavorite);
   }

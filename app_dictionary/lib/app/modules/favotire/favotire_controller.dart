@@ -6,15 +6,18 @@ import '../../core/helpers/constants.dart';
 
 class FavotireController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  late RxList<String> wordsFavorite = <String>[].obs;
-
   late AnimationController controller;
   late Animation<Color?> colorPrimary;
   late Animation<Color?> colorSecondary;
 
+  late RxList<String> wordsFavorite = <String>[].obs;
+  late RxList<String> wordsModel = <String>[].obs;
+
+  RxBool isLoading = false.obs;
+
   @override
   void onInit() {
-    _loadWordsFavorites();
+    loadWordsFavorites();
     controller = AnimationController(
       duration: const Duration(seconds: 3),
       vsync: this,
@@ -36,7 +39,7 @@ class FavotireController extends GetxController
 
   @override
   void onReady() {
-    _loadWordsFavorites();
+    loadWordsFavorites();
     super.onReady();
   }
 
@@ -46,9 +49,23 @@ class FavotireController extends GetxController
     super.onClose();
   }
 
-  void _loadWordsFavorites() async {
+  void loadWordsFavorites() async {
+    wordsModel.clear();
+    wordsFavorite.clear();
     final sp = await SharedPreferences.getInstance();
     final words = sp.getStringList(Constants.WORDSFAVORITES);
-    wordsFavorite.addAll(words!);
+    wordsModel.addAll(words!);
+    wordsFavorite.addAll(words);
+  }
+
+  void favoriteWord(int index) async {
+    final sp = await SharedPreferences.getInstance();
+    if (!wordsFavorite.contains(wordsModel[index])) {
+      wordsFavorite.add(wordsModel[index]);
+      sp.setStringList(Constants.WORDSFAVORITES, wordsFavorite);
+      return;
+    }
+    wordsFavorite.remove(wordsModel[index]);
+    sp.setStringList(Constants.WORDSFAVORITES, wordsFavorite);
   }
 }
