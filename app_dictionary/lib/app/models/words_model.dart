@@ -1,11 +1,11 @@
 class WordsModel {
-  final Map<String, int> words;
+  final Map<String, dynamic> words;
 
   WordsModel({required this.words});
 
   factory WordsModel.fromJson(Map<String, dynamic> json) {
     return WordsModel(
-      words: Map<String, int>.from(json),
+      words: Map<String, dynamic>.from(json),
     );
   }
 

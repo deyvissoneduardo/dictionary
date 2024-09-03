@@ -1,5 +1,6 @@
 import '../../core/exceptions/service_exception.dart';
 import '../../core/fp/either.dart';
+import '../../models/words_model.dart';
 import '../../repositories/local/load_words_repository.dart';
 import 'load_words_service.dart';
 
@@ -15,7 +16,8 @@ class LoadWordsServiceImpl implements LoadWordsService {
 
     switch (result) {
       case Success(value: final words):
-        final wordsList = words.getWordsList();
+        final wordsModel = WordsModel(words: words.words);
+        final List<String> wordsList = wordsModel.getWordsList();
         return Success(wordsList);
       case Failure():
         return Failure(

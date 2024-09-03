@@ -27,14 +27,11 @@ void main() {
         ),
       );
 
-      // Verify that the button exists
       expect(find.byKey(testKey), findsOneWidget);
 
-      // Tap the button and trigger a frame
       await tester.tap(find.byKey(testKey));
       await tester.pump();
 
-      // Verify that the CustomSnackBar is shown
       expect(find.text(message), findsOneWidget);
       expect(find.byIcon(icon), findsOneWidget);
     }
